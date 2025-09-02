@@ -13,17 +13,38 @@ import (
 	"time"
 )
 
-// 配置常量
-const (
-	UpstreamUrl       = "https://chat.z.ai/api/chat/completions"
-	DefaultKey        = "sk-tbkFoKzk9a531YyUNNF5"                                                                                                                                                                                                            // 下游客户端鉴权key
-	UpstreamToken     = "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjMxNmJjYjQ4LWZmMmYtNGExNS04NTNkLWYyYTI5YjY3ZmYwZiIsImVtYWlsIjoiR3Vlc3QtMTc1NTg0ODU4ODc4OEBndWVzdC5jb20ifQ.PktllDySS3trlyuFpTeIZf-7hl8Qu1qYF3BxjgIul0BrNux2nX9hVzIjthLXKMWAf9V0qM8Vm_iyDqkjPGsaiQ" // 上游API的token（回退用）
-	DefaultModelName  = "GLM-4.5"
-	ThinkingModelName = "GLM-4.5-Thinking"
-	SearchModelName   = "GLM-4.5-Search"
-	Port              = ":8080"
-	DebugMode         = true // debug模式开关
+// 配置变量（从环境变量获取）
+var (
+	UpstreamUrl       = getEnv("UPSTREAM_URL", "https://chat.z.ai/api/chat/completions")
+	DefaultKey        = getEnv("DEFAULT_KEY", "sk-prod-woailiming") // 下游客户端鉴权key
+	UpstreamToken     = getEnv("UPSTREAM_TOKEN", "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjMxNmJjYjQ4LWZmMmYtNGExNS04NTNkLWYyYTI5YjY3ZmYwZiIsImVtYWlsIjoiR3Vlc3QtMTc1NTg0ODU4ODc4OEBndWVzdC5jb20ifQ.PktllDySS3trlyuFpTeIZf-7hl8Qu1qYF3BxjgIul0BrNux2nX9hVzIjthLXKMWAf9V0qM8Vm_iyDqkjPGsaiQ") // 上游API的token（回退用）
+	DefaultModelName  = getEnv("DEFAULT_MODEL_NAME", "GLM-4.5")
+	ThinkingModelName = getEnv("THINKING_MODEL_NAME", "GLM-4.5-Thinking")
+	SearchModelName   = getEnv("SEARCH_MODEL_NAME", "GLM-4.5-Search")
+	Port              = getEnv("PORT", ":8080")
+	DebugMode         = getEnvBool("DEBUG_MODE", true) // debug模式开关
 )
+
+// 辅助函数：获取环境变量，存在则返回，否则返回默认值
+func getEnv(key, defaultValue string) string {
+	if value, exists := os.LookupEnv(key); exists {
+		return value
+	}
+	return defaultValue
+}
+
+// 辅助函数：获取布尔型环境变量
+func getEnvBool(key string, defaultValue bool) bool {
+	if value, exists := os.LookupEnv(key); exists {
+		switch strings.ToLower(value) {
+		case "true", "1", "yes", "on":
+			return true
+		case "false", "0", "no", "off":
+			return false
+		}
+	}
+	return defaultValue
+}
 
 // ThinkTagsMode 思考内容处理策略
 const (
