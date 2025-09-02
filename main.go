@@ -21,7 +21,7 @@ const (
 	DefaultModelName  = "GLM-4.5"
 	ThinkingModelName = "GLM-4.5-Thinking"
 	SearchModelName   = "GLM-4.5-Search"
-	Port              = ":5000"
+	Port              = ":8080"
 	DebugMode         = true // debug模式开关
 )
 
