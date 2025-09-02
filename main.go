@@ -14,17 +14,33 @@ import (
 	"os"
 )
 
+package main
+
+import (
+	"os"
+	"strings"
+)
+
 // 配置变量（从环境变量获取）
 var (
 	UpstreamUrl       = getEnv("UPSTREAM_URL", "https://chat.z.ai/api/chat/completions")
-	DefaultKey        = getEnv("DEFAULT_KEY", "sk-prod-woailiming") // 下游客户端鉴权key
-	UpstreamToken     = getEnv("UPSTREAM_TOKEN", "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjMxNmJjYjQ4LWZmMmYtNGExNS04NTNkLWYyYTI5YjY3ZmYwZiIsImVtYWlsIjoiR3Vlc3QtMTc1NTg0ODU4ODc4OEBndWVzdC5jb20ifQ.PktllDySS3trlyuFpTeIZf-7hl8Qu1qYF3BxjgIul0BrNux2nX9hVzIjthLXKMWAf9V0qM8Vm_iyDqkjPGsaiQ") // 上游API的token（回退用）
+	DefaultKey        = getEnv("DEFAULT_KEY", "sk-tbkFoKzk9a531YyUNNF5")
+	UpstreamToken     = getEnv("UPSTREAM_TOKEN", "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjMxNmJjYjQ4LWZmMmYtNGExNS04NTNkLWYyYTI5YjY3ZmYwZiIsImVtYWlsIjoiR3Vlc3QtMTc1NTg0ODU4ODc4OEBndWVzdC5jb20ifQ.PktllDySS3trlyuFpTeIZf-7hl8Qu1qYF3BxjgIul0BrNux2nX9hVzIjthLXKMWAf9V0qM8Vm_iyDqkjPGsaiQ") 
 	DefaultModelName  = getEnv("DEFAULT_MODEL_NAME", "GLM-4.5")
 	ThinkingModelName = getEnv("THINKING_MODEL_NAME", "GLM-4.5-Thinking")
 	SearchModelName   = getEnv("SEARCH_MODEL_NAME", "GLM-4.5-Search")
-	Port              = getEnv("PORT", ":8080")
-	DebugMode         = getEnvBool("DEBUG_MODE", true) // debug模式开关
+	Port              = getEnv("PORT", "8080")
+	DebugMode         = getEnvBool("DEBUG_MODE", true) 
+	DefaultStream     = getEnvBool("DEFAULT_STREAM", true)
 )
+
+func init() {
+	// 处理 Port 变量：确保有冒号前缀
+	if !strings.HasPrefix(Port, ":") {
+		Port = ":" + Port
+	}
+	// 如果以后有其他需要运行时处理的配置，可以在这里添加
+}
 
 // 辅助函数：获取环境变量，存在则返回，否则返回默认值
 func getEnv(key, defaultValue string) string {
