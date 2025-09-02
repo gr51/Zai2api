@@ -14,13 +14,6 @@ import (
 	"os"
 )
 
-package main
-
-import (
-	"os"
-	"strings"
-)
-
 // 配置变量（从环境变量获取）
 var (
 	UpstreamUrl       = getEnv("UPSTREAM_URL", "https://chat.z.ai/api/chat/completions")
